@@ -165,6 +165,26 @@ button:disabled {
     font-weight: bold;
 }
 
+.biggest-differences-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #34495e;
+}
+
+.biggest-differences-section h3 {
+    color: #e74c3c;
+}
+
+.film-item.disagreement {
+    background-color: #2c1810;
+    border-left: 4px solid #e74c3c;
+}
+
+.difference-highlight {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
 .error {
     background-color: #e74c3c;
     color: #ffffff;

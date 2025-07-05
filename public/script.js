@@ -69,30 +69,53 @@ document.addEventListener('DOMContentLoaded', function() {
         
         document.getElementById('details').innerHTML = `
             <p><strong>Users:</strong> ${user1} & ${user2}</p>
-            <p><strong>Shared Films:</strong> ${compatibility.sharedFilmsCount}</p>
-            <p><strong>Average Rating Difference:</strong> ${compatibility.averageRatingDifference}/10</p>
+            <p><strong>Close Matches:</strong> ${compatibility.sharedFilmsCount}</p>
+            <p><strong>Average Rating Difference:</strong> ${compatibility.averageRatingDifference}/5</p>
         `;
         
-        if (compatibility.sharedFilms.length > 0) {
-            const filmsHTML = compatibility.sharedFilms.map(film => `
+        // Display close matches (≤ 1 star difference)
+        if (compatibility.closeMatches && compatibility.closeMatches.length > 0) {
+            const closeMatchesHTML = compatibility.closeMatches.map(film => `
                 <div class="film-item">
                     <div class="film-title">${film.title}</div>
                     <div class="film-ratings">
-                        <span class="rating">${user1}: ${film.user1Rating}/10</span>
-                        <span class="rating">${user2}: ${film.user2Rating}/10</span>
+                        <span class="rating">${user1}: ${film.user1Rating}/5</span>
+                        <span class="rating">${user2}: ${film.user2Rating}/5</span>
                         <span>Diff: ${film.difference}</span>
                     </div>
                 </div>
             `).join('');
             
             document.getElementById('sharedFilms').innerHTML = `
-                <h3>Shared Films (Best Matches First)</h3>
-                ${filmsHTML}
+                <h3>Close Matches (Max 1 Star Difference)</h3>
+                ${closeMatchesHTML}
             `;
         } else {
             document.getElementById('sharedFilms').innerHTML = `
-                <h3>No Shared Films Found</h3>
-                <p>These users haven't rated any films in common.</p>
+                <h3>No Close Matches Found</h3>
+                <p>These users don't have similar ratings for shared films (within 1 star).</p>
+            `;
+        }
+        
+        // Display biggest differences (> 1 star difference)
+        if (compatibility.biggestDifferences && compatibility.biggestDifferences.length > 0) {
+            const biggestDifferencesHTML = compatibility.biggestDifferences.map(film => `
+                <div class="film-item disagreement">
+                    <div class="film-title">${film.title}</div>
+                    <div class="film-ratings">
+                        <span class="rating">${user1}: ${film.user1Rating}/5</span>
+                        <span class="rating">${user2}: ${film.user2Rating}/5</span>
+                        <span class="difference-highlight">Diff: ${film.difference}</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Add the biggest differences section after shared films
+            document.getElementById('sharedFilms').innerHTML += `
+                <div class="biggest-differences-section">
+                    <h3>Biggest Disagreements (Most Different Ratings)</h3>
+                    ${biggestDifferencesHTML}
+                </div>
             `;
         }
         
