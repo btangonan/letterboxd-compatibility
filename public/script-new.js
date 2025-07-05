@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('compatibilityForm');
-    const loading = document.getElementById('loading');
     const results = document.getElementById('results');
     const error = document.getElementById('error');
     const compareBtn = document.getElementById('compareBtn');
@@ -46,15 +45,17 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     function showLoading() {
-        loading.classList.remove('hidden');
         compareBtn.disabled = true;
-        compareBtn.textContent = 'Analyzing...';
+        compareBtn.textContent = '🎬 Analyzing...';
+        compareBtn.classList.add('bg-gray-500');
+        compareBtn.classList.remove('bg-blue-700', 'hover:bg-blue-800');
     }
     
     function hideLoading() {
-        loading.classList.add('hidden');
         compareBtn.disabled = false;
         compareBtn.textContent = 'Analyze Compatibility';
+        compareBtn.classList.remove('bg-gray-500');
+        compareBtn.classList.add('bg-blue-700', 'hover:bg-blue-800');
     }
     
     function showResults(data) {
@@ -80,11 +81,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Display matches
         const matchesList = document.getElementById('matchesList');
         if (compatibility.closeMatches && compatibility.closeMatches.length > 0) {
-            matchesList.innerHTML = compatibility.closeMatches.map(film => `
+            matchesList.innerHTML = compatibility.closeMatches.map((film, index) => `
                 <a href="${film.url || '#'}" target="_blank" rel="noopener noreferrer" 
-                   class="block bg-white bg-opacity-50 rounded-lg p-3 hover:bg-opacity-70 transition-all">
+                   class="block ${index % 2 === 0 ? 'bg-blue-800' : 'bg-blue-600'} text-white py-3 px-6 hover:bg-blue-500 transition-all">
                     <div class="font-semibold">${film.title}</div>
-                    <div class="text-sm text-gray-700">
+                    <div class="text-sm text-blue-200">
                         ${user1}: ${formatRating(film.user1Rating)} • ${user2}: ${formatRating(film.user2Rating)}
                     </div>
                 </a>
@@ -96,11 +97,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Display mismatches
         const mismatchesList = document.getElementById('mismatchesList');
         if (compatibility.biggestDifferences && compatibility.biggestDifferences.length > 0) {
-            mismatchesList.innerHTML = compatibility.biggestDifferences.map(film => `
+            mismatchesList.innerHTML = compatibility.biggestDifferences.map((film, index) => `
                 <a href="${film.url || '#'}" target="_blank" rel="noopener noreferrer" 
-                   class="block bg-white bg-opacity-50 rounded-lg p-3 hover:bg-opacity-70 transition-all">
+                   class="block ${index % 2 === 0 ? 'bg-red-600' : 'bg-red-400'} text-white py-3 px-6 hover:bg-red-300 transition-all">
                     <div class="font-semibold">${film.title}</div>
-                    <div class="text-sm text-gray-700">
+                    <div class="text-sm text-red-100">
                         ${user1}: ${formatRating(film.user1Rating)} • ${user2}: ${formatRating(film.user2Rating)}
                     </div>
                 </a>
@@ -120,7 +121,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function hideAllMessages() {
-        loading.classList.add('hidden');
         results.classList.add('hidden');
         error.classList.add('hidden');
     }

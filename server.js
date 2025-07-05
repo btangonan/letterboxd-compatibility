@@ -7,6 +7,12 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Simple request counter for monthly limits
+let requestCount = 0;
+const REQUEST_LIMIT = parseInt(process.env.REQUEST_LIMIT) || 100;
+const resetDate = new Date();
+resetDate.setMonth(resetDate.getMonth() + 1);
+
 app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -17,6 +23,16 @@ app.get('/', (req, res) => {
 
 app.post('/compare', async (req, res) => {
   try {
+    // Check request limit
+    if (requestCount >= REQUEST_LIMIT) {
+      return res.status(429).json({ 
+        error: `Monthly request limit of ${REQUEST_LIMIT} reached. Resets next month.`
+      });
+    }
+    
+    requestCount++;
+    console.log(`📊 Request ${requestCount}/${REQUEST_LIMIT} this month`);
+    
     const { username1, username2 } = req.body;
     
     if (!username1 || !username2) {
@@ -26,8 +42,9 @@ app.post('/compare', async (req, res) => {
     console.log(`🚀 Starting comparison: ${username1} vs ${username2}`);
     
     // Add timeout to prevent hanging
+    const timeoutMs = process.env.NODE_ENV === 'production' ? 120000 : 60000; // 2 min in prod, 1 min local
     const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('Operation timed out after 60 seconds')), 60000);
+      setTimeout(() => reject(new Error(`Operation timed out after ${timeoutMs/1000} seconds`)), timeoutMs);
     });
     
     const comparisonPromise = (async () => {
@@ -66,8 +83,9 @@ async function scrapeUserFilms(username) {
   try {
     console.log(`🔍 Starting scrape for ${username}...`);
     
+    console.log(`🚀 Launching browser...`);
     browser = await puppeteer.launch({ 
-      headless: "new",
+      headless: true,
       args: [
         '--no-sandbox', 
         '--disable-setuid-sandbox',
@@ -80,18 +98,29 @@ async function scrapeUserFilms(username) {
         '--disable-renderer-backgrounding'
       ]
     });
+    console.log(`✅ Browser launched successfully`);
     
+    console.log(`📋 Creating new page...`);
     const page = await browser.newPage();
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
+    console.log(`🔧 Setting user agent...`);
+    await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36');
+    
     
     // Use the main films page which shows ratings
     const url = `https://letterboxd.com/${username}/films/`;
     console.log(`📄 Loading ${url}...`);
     
-    const response = await page.goto(url, { 
-      waitUntil: 'domcontentloaded',
-      timeout: 10000 
-    });
+    let response;
+    try {
+      response = await page.goto(url, { 
+        waitUntil: 'networkidle2',
+        timeout: 15000 
+      });
+      console.log(`✅ Page loaded with status: ${response.status()}`);
+    } catch (gotoError) {
+      console.log(`❌ Error during page.goto: ${gotoError.message}`);
+      throw gotoError;
+    }
     
     if (response.status() === 404) {
       throw new Error(`User ${username} not found`);
@@ -291,6 +320,6 @@ function calculateCompatibility(user1Films, user2Films) {
   };
 }
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on http://0.0.0.0:${PORT}`);
 });
