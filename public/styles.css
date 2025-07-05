@@ -118,6 +118,13 @@ button:disabled {
     color: #ffffff;
 }
 
+.sample-size {
+    font-size: 0.9em;
+    color: #cccccc;
+    margin-top: 10px;
+    font-style: italic;
+}
+
 .details {
     margin-bottom: 20px;
     padding: 15px;

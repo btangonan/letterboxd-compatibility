@@ -48,13 +48,25 @@ document.addEventListener('DOMContentLoaded', function() {
     function showLoading() {
         loading.classList.remove('hidden');
         compareBtn.disabled = true;
-        compareBtn.textContent = 'Analyzing...';
+        
+        // Update button with loading state
+        const buttonText = compareBtn.querySelector('.button-text');
+        const loadingSpinner = compareBtn.querySelector('.loading-spinner');
+        
+        if (buttonText) buttonText.textContent = 'Calculating...';
+        if (loadingSpinner) loadingSpinner.classList.remove('hidden');
     }
     
     function hideLoading() {
         loading.classList.add('hidden');
         compareBtn.disabled = false;
-        compareBtn.textContent = 'Check Compatibility';
+        
+        // Reset button to normal state
+        const buttonText = compareBtn.querySelector('.button-text');
+        const loadingSpinner = compareBtn.querySelector('.loading-spinner');
+        
+        if (buttonText) buttonText.textContent = 'Analyze Compatibility';
+        if (loadingSpinner) loadingSpinner.classList.add('hidden');
     }
     
     function showResults(data) {
@@ -62,59 +74,97 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const { compatibility, user1, user2 } = data;
         
-        document.getElementById('compatibilityScore').innerHTML = `
-            <h3>Compatibility Score</h3>
-            <div class="score">${compatibility.compatibilityScore}%</div>
+        // Debug: Log the data to console
+        console.log('Compatibility data:', compatibility);
+        
+        // Update compatibility score
+        document.getElementById('compatibilityScore').textContent = `${compatibility.compatibilityScore}%`;
+        document.getElementById('scoreSubtitle').textContent = `Based on ${compatibility.totalSharedFilms} shared films`;
+        
+        // Update score stats
+        const starText = compatibility.averageRatingDifference === 1 ? 'star' : 'stars';
+        document.getElementById('scoreStats').innerHTML = `
+            <div class="stat-item">
+                <div class="stat-value">${compatibility.totalSharedFilms}</div>
+                <div class="stat-label">Films in common</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">${compatibility.sharedFilmsCount}</div>
+                <div class="stat-label">Close matches</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">${compatibility.averageRatingDifference} ${starText}</div>
+                <div class="stat-label">Avg difference</div>
+            </div>
         `;
         
-        document.getElementById('details').innerHTML = `
-            <p><strong>Users:</strong> ${user1} & ${user2}</p>
-            <p><strong>Close Matches:</strong> ${compatibility.sharedFilmsCount}</p>
-            <p><strong>Average Rating Difference:</strong> ${compatibility.averageRatingDifference}/5</p>
-        `;
+        // Helper function to format rating as stars
+        function formatRating(rating) {
+            const fullStars = Math.floor(rating);
+            const halfStar = rating % 1 >= 0.5;
+            return '★'.repeat(fullStars) + (halfStar ? '½' : '');
+        }
         
-        // Display close matches (≤ 1 star difference)
+        // Display close matches (≤ 0.5 star difference)
         if (compatibility.closeMatches && compatibility.closeMatches.length > 0) {
             const closeMatchesHTML = compatibility.closeMatches.map(film => `
-                <div class="film-item">
-                    <div class="film-title">${film.title}</div>
-                    <div class="film-ratings">
-                        <span class="rating">${user1}: ${film.user1Rating}/5</span>
-                        <span class="rating">${user2}: ${film.user2Rating}/5</span>
-                        <span>Diff: ${film.difference}</span>
+                <a href="${film.url || '#'}" target="_blank" rel="noopener noreferrer" class="film-item-link">
+                    <div class="film-item">
+                        <div class="film-info">
+                            <div class="film-title">${film.title}</div>
+                            <div class="film-ratings">
+                                <span class="rating-user">
+                                    <span class="username">${user1}:</span> ${formatRating(film.user1Rating)}
+                                </span>
+                                <span class="rating-user">
+                                    <span class="username">${user2}:</span> ${formatRating(film.user2Rating)}
+                                </span>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </a>
             `).join('');
             
-            document.getElementById('sharedFilms').innerHTML = `
-                <h3>Close Matches (Max 1 Star Difference)</h3>
-                ${closeMatchesHTML}
-            `;
+            document.getElementById('closeMatchesList').innerHTML = closeMatchesHTML;
         } else {
-            document.getElementById('sharedFilms').innerHTML = `
-                <h3>No Close Matches Found</h3>
-                <p>These users don't have similar ratings for shared films (within 1 star).</p>
+            document.getElementById('closeMatchesList').innerHTML = `
+                <div class="film-item">
+                    <div class="film-info">
+                        <div class="film-title">No close matches found</div>
+                        <p>These users don't have similar ratings for shared films (within 0.5 stars).</p>
+                    </div>
+                </div>
             `;
         }
         
-        // Display biggest differences (> 1 star difference)
+        // Display biggest differences (>= 1.5 star difference)
         if (compatibility.biggestDifferences && compatibility.biggestDifferences.length > 0) {
             const biggestDifferencesHTML = compatibility.biggestDifferences.map(film => `
-                <div class="film-item disagreement">
-                    <div class="film-title">${film.title}</div>
-                    <div class="film-ratings">
-                        <span class="rating">${user1}: ${film.user1Rating}/5</span>
-                        <span class="rating">${user2}: ${film.user2Rating}/5</span>
-                        <span class="difference-highlight">Diff: ${film.difference}</span>
+                <a href="${film.url || '#'}" target="_blank" rel="noopener noreferrer" class="film-item-link">
+                    <div class="film-item disagreement">
+                        <div class="film-info">
+                            <div class="film-title">${film.title}</div>
+                            <div class="film-ratings">
+                                <span class="rating-user">
+                                    <span class="username">${user1}:</span> ${formatRating(film.user1Rating)}
+                                </span>
+                                <span class="rating-user">
+                                    <span class="username">${user2}:</span> ${formatRating(film.user2Rating)}
+                                </span>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </a>
             `).join('');
             
-            // Add the biggest differences section after shared films
-            document.getElementById('sharedFilms').innerHTML += `
-                <div class="biggest-differences-section">
-                    <h3>Biggest Disagreements (Most Different Ratings)</h3>
-                    ${biggestDifferencesHTML}
+            document.getElementById('disagreementsList').innerHTML = biggestDifferencesHTML;
+        } else {
+            document.getElementById('disagreementsList').innerHTML = `
+                <div class="film-item">
+                    <div class="film-info">
+                        <div class="film-title">No major disagreements</div>
+                        <p>You both have very similar taste in films!</p>
+                    </div>
                 </div>
             `;
         }
