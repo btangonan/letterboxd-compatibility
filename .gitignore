@@ -29,3 +29,4 @@ Thumbs.db
 # Screenshots and debug output
 screenshot*.png
 *.log
+.vercel

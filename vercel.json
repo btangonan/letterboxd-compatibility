@@ -1,4 +1,5 @@
 {
+  "name": "letterbuddy",
   "version": 2,
   "builds": [
     {
