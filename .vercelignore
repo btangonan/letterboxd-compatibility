@@ -1,0 +1,5 @@
+node_modules
+.git
+start.sh
+README.md
+.DS_Store
