@@ -128,7 +128,6 @@ async function scrapeUserFilms(username) {
     
     console.log(`⏳ Waiting for content...`);
     await page.waitForSelector('.poster-list', { timeout: 5000 });
-    await new Promise(resolve => setTimeout(resolve, 750));
     
     console.log(`🎬 Extracting films for ${username}...`);
     
@@ -147,7 +146,6 @@ async function scrapeUserFilms(username) {
           timeout: 10000 
         });
         await page.waitForSelector('.poster-list', { timeout: 5000 });
-        await new Promise(resolve => setTimeout(resolve, 500));
       }
       
       const pageFilms = await page.evaluate(() => {
