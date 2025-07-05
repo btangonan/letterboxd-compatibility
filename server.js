@@ -302,11 +302,27 @@ function calculateCompatibility(user1Films, user2Films) {
     };
   }
   
-  // Sort close matches from best to worst (lowest difference first = most compatible)
-  closeMatches.sort((a, b) => a.difference - b.difference);
+  // Sort close matches: first by difference (lowest first), then by highest rating for ties
+  closeMatches.sort((a, b) => {
+    if (a.difference !== b.difference) {
+      return a.difference - b.difference; // Lower difference = better match
+    }
+    // For same difference, prioritize higher ratings (take max of both users)
+    const maxRatingA = Math.max(a.user1Rating, a.user2Rating);
+    const maxRatingB = Math.max(b.user1Rating, b.user2Rating);
+    return maxRatingB - maxRatingA; // Higher max rating first
+  });
   
-  // Sort biggest differences from worst to best (highest difference first = most incompatible)
-  biggestDifferences.sort((a, b) => b.difference - a.difference);
+  // Sort biggest differences: first by difference (highest first), then by highest rating for ties
+  biggestDifferences.sort((a, b) => {
+    if (a.difference !== b.difference) {
+      return b.difference - a.difference; // Higher difference = bigger disagreement
+    }
+    // For same difference, prioritize higher ratings (take max of both users)
+    const maxRatingA = Math.max(a.user1Rating, a.user2Rating);
+    const maxRatingB = Math.max(b.user1Rating, b.user2Rating);
+    return maxRatingB - maxRatingA; // Higher max rating first
+  });
   
   return {
     compatibilityScore: Math.max(0, compatibilityScore),
