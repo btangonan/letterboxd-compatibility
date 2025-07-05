@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letterboxd Compatibility Checker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Letterboxd Film Compatibility Checker</h1>
+        <p>Enter two Letterboxd usernames to see how compatible your film tastes are!</p>
+        
+        <form id="compatibilityForm">
+            <div class="form-group">
+                <label for="username1">First Username:</label>
+                <input type="text" id="username1" name="username1" required placeholder="Enter Letterboxd username">
+            </div>
+            
+            <div class="form-group">
+                <label for="username2">Second Username:</label>
+                <input type="text" id="username2" name="username2" required placeholder="Enter Letterboxd username">
+            </div>
+            
+            <button type="submit" id="compareBtn">Check Compatibility</button>
+        </form>
+        
+        <div id="loading" class="loading hidden">
+            <p>Analyzing film compatibility...</p>
+        </div>
+        
+        <div id="results" class="results hidden">
+            <h2>Compatibility Results</h2>
+            <div id="compatibilityScore" class="score-display"></div>
+            <div id="details" class="details"></div>
+            <div id="sharedFilms" class="shared-films"></div>
+        </div>
+        
+        <div id="error" class="error hidden"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
