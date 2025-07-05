@@ -109,19 +109,6 @@ document.addEventListener('DOMContentLoaded', function() {
             mismatchesList.innerHTML = '<div class="text-gray-700">No major disagreements</div>';
         }
         
-        // Display featured films (random selection for visual interest)
-        const featuredFilms = document.getElementById('featuredFilms');
-        const allFilms = [...(compatibility.closeMatches || []), ...(compatibility.biggestDifferences || [])];
-        const randomFilms = allFilms.sort(() => 0.5 - Math.random()).slice(0, 3);
-        
-        const colors = ['bg-orange-200', 'bg-pink-200', 'bg-pink-100'];
-        featuredFilms.innerHTML = randomFilms.map((film, index) => `
-            <a href="${film.url || '#'}" target="_blank" rel="noopener noreferrer" 
-               class="col-span-2 ${colors[index]} rounded-xl p-4 text-sm shadow hover:shadow-lg transition-all">
-                <div class="font-semibold">${film.title}</div>
-                <div class="text-gray-700">${user1}: ${formatRating(film.user1Rating)} • ${user2}: ${formatRating(film.user2Rating)}</div>
-            </a>
-        `).join('');
         
         results.classList.remove('hidden');
     }

@@ -6,7 +6,7 @@
     <title>Letterboxd Compatibility Checker</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gradient-to-br from-yellow-100 to-yellow-200 min-h-screen font-sans p-6">
+<body class="bg-black min-h-screen font-sans p-6">
     <div class="max-w-5xl mx-auto grid grid-cols-6 gap-4">
         <!-- Header -->
         <div class="col-span-6 bg-white rounded-xl p-6 text-center shadow">
@@ -35,7 +35,7 @@
             <!-- Match Rate -->
             <div class="col-span-2 bg-pink-200 rounded-xl p-6 shadow text-center">
                 <div id="compatibilityScore" class="text-5xl font-bold">0%</div>
-                <div class="text-lg">Match Rate</div>
+                <div class="text-sm">Match Rate</div>
             </div>
 
             <!-- Shared Films -->
@@ -46,14 +46,14 @@
 
             <!-- Close Matches -->
             <div class="col-span-1 bg-pink-100 rounded-xl p-6 shadow text-center">
-                <div id="closeMatchesCount" class="text-2xl font-bold">0</div>
+                <div id="closeMatchesCount" class="text-4xl font-bold">0</div>
                 <div class="text-sm font-semibold">Close Matches</div>
             </div>
 
             <!-- Star Difference -->
             <div class="col-span-2 bg-gradient-to-r from-gray-100 to-green-100 rounded-xl p-6 shadow text-center">
-                <div id="avgDifference" class="text-2xl font-semibold">0 stars</div>
-                <div class="text-lg">Average Difference</div>
+                <div id="avgDifference" class="text-4xl font-semibold">0 stars</div>
+                <div class="text-sm">Average Difference</div>
             </div>
 
             <!-- Matches -->
@@ -72,10 +72,6 @@
                 </div>
             </div>
 
-            <!-- Featured Films Row -->
-            <div id="featuredFilms" class="col-span-6 grid grid-cols-3 gap-4">
-                <!-- Featured films will be populated here -->
-            </div>
         </div>
 
         <!-- Error State -->
