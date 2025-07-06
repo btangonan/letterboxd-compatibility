@@ -42,7 +42,7 @@ app.post('/compare', async (req, res) => {
     console.log(`🚀 Starting comparison: ${username1} vs ${username2}`);
     
     // Add timeout to prevent hanging
-    const timeoutMs = process.env.NODE_ENV === 'production' ? 120000 : 60000; // 2 min in prod, 1 min local
+    const timeoutMs = process.env.NODE_ENV === 'production' ? 120000 : 90000; // 2 min in prod, 1.5 min local
     const timeoutPromise = new Promise((_, reject) => {
       setTimeout(() => reject(new Error(`Operation timed out after ${timeoutMs/1000} seconds`)), timeoutMs);
     });
@@ -86,41 +86,24 @@ async function scrapeUserFilms(username) {
     console.log(`🚀 Launching browser...`);
     browser = await puppeteer.launch({ 
       headless: true,
-      args: [
-        '--no-sandbox', 
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-gpu',
-        '--no-first-run',
-        '--disable-extensions',
-        '--disable-background-timer-throttling',
-        '--disable-backgrounding-occluded-windows',
-        '--disable-renderer-backgrounding'
-      ]
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
     console.log(`✅ Browser launched successfully`);
     
     console.log(`📋 Creating new page...`);
     const page = await browser.newPage();
-    console.log(`🔧 Setting user agent...`);
-    await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36');
     
     
     // Use the main films page which shows ratings
     const url = `https://letterboxd.com/${username}/films/`;
     console.log(`📄 Loading ${url}...`);
     
-    let response;
-    try {
-      response = await page.goto(url, { 
-        waitUntil: 'networkidle2',
-        timeout: 15000 
-      });
-      console.log(`✅ Page loaded with status: ${response.status()}`);
-    } catch (gotoError) {
-      console.log(`❌ Error during page.goto: ${gotoError.message}`);
-      throw gotoError;
-    }
+    console.log(`⏳ Loading ${url}...`);
+    const response = await page.goto(url, { 
+      waitUntil: 'domcontentloaded',
+      timeout: 15000 
+    });
+    console.log(`✅ Page loaded with status: ${response.status()}`);
     
     if (response.status() === 404) {
       throw new Error(`User ${username} not found`);
@@ -128,12 +111,13 @@ async function scrapeUserFilms(username) {
     
     console.log(`⏳ Waiting for content...`);
     await page.waitForSelector('.poster-list', { timeout: 5000 });
+    await page.waitForTimeout(1000); // Brief wait for content to render
     
     console.log(`🎬 Extracting films for ${username}...`);
     
     let allFilms = [];
     let currentPage = 1;
-    const maxPages = 5; // Limit to first 5 pages to avoid timeout
+    const maxPages = 5;
     
     while (currentPage <= maxPages) {
       console.log(`📄 Processing page ${currentPage} for ${username}...`);
@@ -143,9 +127,9 @@ async function scrapeUserFilms(username) {
         const pageUrl = `https://letterboxd.com/${username}/films/page/${currentPage}/`;
         await page.goto(pageUrl, { 
           waitUntil: 'domcontentloaded',
-          timeout: 10000 
+          timeout: 15000 
         });
-        await page.waitForSelector('.poster-list', { timeout: 5000 });
+        await page.waitForSelector('.poster-list', { timeout: 8000 });
       }
       
       const pageFilms = await page.evaluate(() => {
@@ -167,25 +151,37 @@ async function scrapeUserFilms(username) {
           const title = img ? img.alt : null;
           const url = link ? link.href : null;
           
-          if (title && index < allRatings.length) {
-            films.push({
-              title: title.trim(),
-              rating: allRatings[index],
-              url: url
-            });
+          if (title) {
+            // Only include films that have ratings for comparison purposes
+            if (index < allRatings.length && allRatings[index] !== null) {
+              films.push({
+                title: title.trim(),
+                rating: allRatings[index],
+                url: url
+              });
+            }
           }
         });
         
-        return films;
+        return {
+          films,
+          filmElementsCount: filmElements.length,
+          ratingElementsCount: ratingElements.length,
+          validRatingsCount: allRatings.length
+        };
       });
       
-      if (pageFilms.length === 0) {
+      console.log(`🎯 Debug for ${username} page ${currentPage}: ${pageFilms.filmElementsCount} film elements, ${pageFilms.ratingElementsCount} rating elements, ${pageFilms.validRatingsCount} valid ratings, ${pageFilms.films.length} final films`);
+      
+      const films = pageFilms.films;
+      
+      if (films.length === 0) {
         console.log(`📄 No more films found on page ${currentPage}, stopping...`);
         break;
       }
       
-      allFilms = allFilms.concat(pageFilms);
-      console.log(`📄 Found ${pageFilms.length} films on page ${currentPage} (total: ${allFilms.length})`);
+      allFilms = allFilms.concat(films);
+      console.log(`📄 Found ${films.length} films on page ${currentPage} (total: ${allFilms.length})`);
       
       currentPage++;
     }
@@ -193,7 +189,13 @@ async function scrapeUserFilms(username) {
     const films = allFilms;
     
     if (films.length === 0) {
-      throw new Error(`No rated films found for user ${username}. User may not exist or have no public ratings.`);
+      // Check if we found films but no ratings (user has films but ratings are private)
+      const totalFilmElements = await page.$$eval('.poster-list .poster', els => els.length).catch(() => 0);
+      if (totalFilmElements > 0) {
+        throw new Error(`User ${username} has ${totalFilmElements} films but no public ratings. Please make sure your ratings are public in your Letterboxd privacy settings.`);
+      } else {
+        throw new Error(`No films found for user ${username}. User may not exist or have no films.`);
+      }
     }
     
     console.log(`✅ Successfully extracted ${films.length} films for ${username}`);
