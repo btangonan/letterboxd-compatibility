@@ -43,35 +43,35 @@
     </script>
 </head>
 <body class="bg-[#fbf9f5] min-h-screen flex justify-center">
-    <div class="flex flex-col items-center gap-[26px] px-[66px] pt-[24px] pb-[86px] relative bg-[#fbf9f5] scale-[0.6]" style="transform-origin: center top;">
+    <div class="flex flex-col items-center gap-4 md:gap-[26px] px-4 md:px-[66px] pt-4 md:pt-[24px] pb-12 md:pb-[86px] relative bg-[#fbf9f5] w-full max-w-7xl scale-75 md:scale-[0.6]" style="transform-origin: center top;">
         <!-- Header Section -->
         <div class="flex flex-col items-center relative self-stretch w-full">
-            <div class="relative self-stretch mt-[-1.00px] font-black text-[#141414] text-[100px] tracking-[0] leading-[normal] text-center">
+            <div class="relative self-stretch mt-[-1.00px] font-black text-[#141414] text-4xl md:text-[100px] tracking-[0] leading-[normal] text-center">
                 FILM COMPATIBILITY TEST
             </div>
-            <p class="relative self-stretch font-normal text-[#141414] text-3xl text-center tracking-[0] leading-[normal]">
+            <p class="relative self-stretch font-normal text-[#141414] text-lg md:text-3xl text-center tracking-[0] leading-[normal]">
                 Compare <a href="https://letterboxd.com/" target="_blank" rel="noopener noreferrer" class="underline hover:no-underline">Letterboxd</a> ratings to find out how similar your film tastes really are
             </p>
         </div>
 
         <!-- Input and Button Section -->
-        <div class="flex flex-col items-center gap-[30px] relative self-stretch w-full">
-            <div class="flex items-center gap-[26px] relative justify-center w-full">
+        <div class="flex flex-col items-center gap-4 md:gap-[30px] relative self-stretch w-full">
+            <div class="flex flex-col md:flex-row items-center gap-4 md:gap-[26px] relative justify-center w-full">
                 <!-- Username Input Container -->
-                <div class="relative w-[664px] h-[92px]">
-                    <div class="w-[660px] h-[92px] bg-[#fbf9f5] relative rounded-2xl border-[3px] border-solid border-[#141414]">
+                <div class="relative w-full md:w-[664px] h-[60px] md:h-[92px]">
+                    <div class="w-full md:w-[660px] h-[60px] md:h-[92px] bg-[#fbf9f5] relative rounded-2xl border-[3px] border-solid border-[#141414]">
                         <input type="text" id="username1" placeholder="username #1" spellcheck="false"
-                               class="absolute top-[26px] left-[50px] font-bold text-[#141414] text-[24px] tracking-[0] leading-[normal] bg-transparent border-none outline-none placeholder-[#141414] placeholder-opacity-30 w-[250px] focus:outline-none focus:ring-0 focus:border-none">
-                        <div class="absolute w-[1px] h-[50px] top-[21px] left-[322px] bg-[#141414]"></div>
+                               class="absolute top-[15px] md:top-[26px] left-[20px] md:left-[50px] font-bold text-[#141414] text-[18px] md:text-[24px] tracking-[0] leading-[normal] bg-transparent border-none outline-none placeholder-[#141414] placeholder-opacity-30 w-[120px] md:w-[250px] focus:outline-none focus:ring-0 focus:border-none">
+                        <div class="absolute w-[1px] h-[30px] md:h-[50px] top-[15px] md:top-[21px] left-[50%] md:left-[322px] bg-[#141414] transform -translate-x-1/2 md:transform-none"></div>
                         <input type="text" id="username2" placeholder="username #2" spellcheck="false"
-                               class="absolute top-[26px] left-[390px] font-bold text-[#141414] text-[24px] tracking-[0] leading-[normal] bg-transparent border-none outline-none placeholder-[#141414] placeholder-opacity-30 w-[250px] focus:outline-none focus:ring-0 focus:border-none">
+                               class="absolute top-[15px] md:top-[26px] right-[20px] md:right-[50px] font-bold text-[#141414] text-[18px] md:text-[24px] tracking-[0] leading-[normal] bg-transparent border-none outline-none placeholder-[#141414] placeholder-opacity-30 w-[120px] md:w-[250px] focus:outline-none focus:ring-0 focus:border-none text-right md:text-left">
                     </div>
                 </div>
 
                 <!-- Analyze Button -->
-                <div class="relative w-[662px] h-[92px]">
-                    <button id="compareBtn" class="relative w-[660px] h-[92px] bg-[#141414] rounded-2xl hover:bg-gray-800 transition-colors">
-                        <div class="absolute top-[22px] left-[85px] font-bold text-[#fbf9f5] text-[40px] tracking-[0] leading-[normal] whitespace-nowrap">
+                <div class="relative w-full md:w-[662px] h-[60px] md:h-[92px]">
+                    <button id="compareBtn" class="relative w-full md:w-[660px] h-[60px] md:h-[92px] bg-[#141414] rounded-2xl hover:bg-gray-800 transition-colors">
+                        <div class="absolute top-[15px] md:top-[22px] left-1/2 md:left-[85px] transform -translate-x-1/2 md:transform-none font-bold text-[#fbf9f5] text-[18px] md:text-[40px] tracking-[0] leading-[normal] whitespace-nowrap">
                             ANALYZE COMPATIBILITY
                         </div>
                     </button>
@@ -81,38 +81,38 @@
             <!-- Results Section -->
             <div id="results" class="hidden w-full">
                 <!-- Stats Cards -->
-                <div class="flex items-center gap-9 relative justify-center w-full mb-[30px]">
+                <div class="flex flex-col md:flex-row items-center gap-4 md:gap-9 relative justify-center w-full mb-6 md:mb-[30px]">
                     <!-- Match Rate Card -->
-                    <div class="relative w-[429px] h-[356px]">
-                        <div class="w-[425px] h-[356px] bg-[#ffe250] relative rounded-2xl border-[3px] border-solid border-[#141414] flex flex-col items-center justify-center">
-                            <div id="compatibilityScore" class="font-extrabold text-[#141414] text-[150px] tracking-[0] leading-[normal] mb-[-10px]">
+                    <div class="relative w-full md:w-[429px] h-[200px] md:h-[356px]">
+                        <div class="w-full md:w-[425px] h-[200px] md:h-[356px] bg-[#ffe250] relative rounded-2xl border-[3px] border-solid border-[#141414] flex flex-col items-center justify-center">
+                            <div id="compatibilityScore" class="font-extrabold text-[#141414] text-[80px] md:text-[150px] tracking-[0] leading-[normal] mb-[-5px] md:mb-[-10px]">
                                 0%
                             </div>
-                            <div class="font-bold text-[#141414] text-[40px] text-center tracking-[0] leading-[normal] whitespace-nowrap">
+                            <div class="font-bold text-[#141414] text-[20px] md:text-[40px] text-center tracking-[0] leading-[normal] whitespace-nowrap">
                                 COMPATIBILITY
                             </div>
                         </div>
                     </div>
 
                     <!-- Films in Common Card -->
-                    <div class="relative w-[428px] h-[356px]">
-                        <div class="relative w-[424px] h-[356px] bg-[#50d98a] rounded-2xl border-[3px] border-solid border-[#141414] flex flex-col items-center justify-center">
-                            <div id="totalFilms" class="font-extrabold text-[#141414] text-[150px] tracking-[0] leading-[normal] mb-[-20px]">
+                    <div class="relative w-full md:w-[428px] h-[200px] md:h-[356px]">
+                        <div class="relative w-full md:w-[424px] h-[200px] md:h-[356px] bg-[#50d98a] rounded-2xl border-[3px] border-solid border-[#141414] flex flex-col items-center justify-center">
+                            <div id="totalFilms" class="font-extrabold text-[#141414] text-[80px] md:text-[150px] tracking-[0] leading-[normal] mb-[-10px] md:mb-[-20px]">
                                 0
                             </div>
-                            <div class="font-bold text-[#141414] text-[40px] text-center tracking-[0] leading-[normal]">
+                            <div class="font-bold text-[#141414] text-[20px] md:text-[40px] text-center tracking-[0] leading-[normal]">
                                 FILMS<br />IN COMMON
                             </div>
                         </div>
                     </div>
 
                     <!-- Close Matches Card -->
-                    <div class="relative w-[429px] h-[356px]">
-                        <div class="relative w-[425px] h-[356px] bg-[#b788ef] rounded-2xl border-[3px] border-solid border-[#141414] flex flex-col items-center justify-center">
-                            <div id="closeMatchesCount" class="font-extrabold text-[#141414] text-[150px] tracking-[0] leading-[normal] mb-[-20px]">
+                    <div class="relative w-full md:w-[429px] h-[200px] md:h-[356px]">
+                        <div class="relative w-full md:w-[425px] h-[200px] md:h-[356px] bg-[#b788ef] rounded-2xl border-[3px] border-solid border-[#141414] flex flex-col items-center justify-center">
+                            <div id="closeMatchesCount" class="font-extrabold text-[#141414] text-[80px] md:text-[150px] tracking-[0] leading-[normal] mb-[-10px] md:mb-[-20px]">
                                 0
                             </div>
-                            <div class="font-bold text-[#141414] text-[40px] text-center tracking-[0] leading-[normal]">
+                            <div class="font-bold text-[#141414] text-[20px] md:text-[40px] text-center tracking-[0] leading-[normal]">
                                 MATCHES
                             </div>
                         </div>
@@ -121,17 +121,17 @@
 
                 <!-- Matches and Mismatches Section -->
                 <div class="flex flex-col items-center gap-5 relative self-stretch w-full">
-                    <div class="flex items-start gap-[30px] relative justify-center w-full max-w-[1352px] mx-auto">
-                        <div class="flex-1 max-w-[660px]">
-                            <div class="font-black text-[#141414] text-6xl tracking-[0] leading-[normal] mb-5">
+                    <div class="flex flex-col md:flex-row items-start gap-8 md:gap-[30px] relative justify-center w-full max-w-[1352px] mx-auto">
+                        <div class="flex-1 w-full md:max-w-[660px]">
+                            <div class="font-black text-[#141414] text-3xl md:text-6xl tracking-[0] leading-[normal] mb-5 text-center md:text-left">
                                 MATCHES
                             </div>
                             <div id="matchesList" class="space-y-4">
                                 <!-- Matches will be populated here -->
                             </div>
                         </div>
-                        <div class="flex-1 max-w-[660px]">
-                            <div class="font-black text-[#141414] text-6xl tracking-[0] leading-[normal] mb-5">
+                        <div class="flex-1 w-full md:max-w-[660px]">
+                            <div class="font-black text-[#141414] text-3xl md:text-6xl tracking-[0] leading-[normal] mb-5 text-center md:text-left">
                                 MISMATCHES
                             </div>
                             <div id="mismatchesList" class="space-y-4">
@@ -268,14 +268,14 @@
                 if (compatibility.closeMatches && compatibility.closeMatches.length > 0) {
                     matchesList.innerHTML = compatibility.closeMatches.map((film) => `
                         <a href="${film.url || '#'}" target="_blank" rel="noopener noreferrer" class="block">
-                            <div class="relative w-[660px] h-[152px] bg-[#51efec] rounded-2xl border-[3px] border-solid border-[#141414] hover:bg-opacity-80 transition-all">
-                                <div class="absolute w-[594px] top-[15px] left-[25px] font-semibold text-[#141414] text-3xl tracking-[0] leading-[normal]">
+                            <div class="relative w-full md:w-[660px] h-[120px] md:h-[152px] bg-[#51efec] rounded-2xl border-[3px] border-solid border-[#141414] hover:bg-opacity-80 transition-all">
+                                <div class="absolute w-[calc(100%-40px)] md:w-[594px] top-[10px] md:top-[15px] left-[20px] md:left-[25px] font-semibold text-[#141414] text-xl md:text-3xl tracking-[0] leading-[normal] truncate">
                                     ${film.title}
                                 </div>
-                                <div class="absolute top-[67px] left-[25px] font-medium text-[#141414] text-xl tracking-[0] leading-[normal]">
+                                <div class="absolute top-[45px] md:top-[67px] left-[20px] md:left-[25px] font-medium text-[#141414] text-base md:text-xl tracking-[0] leading-[normal]">
                                     ${user1}: ${formatRating(film.user1Rating)}
                                 </div>
-                                <div class="absolute top-[99px] left-[25px] font-medium text-[#141414] text-xl tracking-[0] leading-[normal]">
+                                <div class="absolute top-[70px] md:top-[99px] left-[20px] md:left-[25px] font-medium text-[#141414] text-base md:text-xl tracking-[0] leading-[normal]">
                                     ${user2}: ${formatRating(film.user2Rating)}
                                 </div>
                             </div>
@@ -290,14 +290,14 @@
                 if (compatibility.biggestDifferences && compatibility.biggestDifferences.length > 0) {
                     mismatchesList.innerHTML = compatibility.biggestDifferences.map((film) => `
                         <a href="${film.url || '#'}" target="_blank" rel="noopener noreferrer" class="block">
-                            <div class="relative w-[660px] h-[152px] bg-[#ff6e58] rounded-2xl border-[3px] border-solid border-[#141414] hover:bg-opacity-80 transition-all">
-                                <div class="absolute w-[594px] top-[15px] left-[25px] font-semibold text-[#141414] text-3xl tracking-[0] leading-[normal]">
+                            <div class="relative w-full md:w-[660px] h-[120px] md:h-[152px] bg-[#ff6e58] rounded-2xl border-[3px] border-solid border-[#141414] hover:bg-opacity-80 transition-all">
+                                <div class="absolute w-[calc(100%-40px)] md:w-[594px] top-[10px] md:top-[15px] left-[20px] md:left-[25px] font-semibold text-[#141414] text-xl md:text-3xl tracking-[0] leading-[normal] truncate">
                                     ${film.title}
                                 </div>
-                                <div class="absolute top-[67px] left-[25px] font-medium text-[#141414] text-xl tracking-[0] leading-[normal]">
+                                <div class="absolute top-[45px] md:top-[67px] left-[20px] md:left-[25px] font-medium text-[#141414] text-base md:text-xl tracking-[0] leading-[normal]">
                                     ${user1}: ${formatRating(film.user1Rating)}
                                 </div>
-                                <div class="absolute top-[99px] left-[25px] font-medium text-[#141414] text-xl tracking-[0] leading-[normal]">
+                                <div class="absolute top-[70px] md:top-[99px] left-[20px] md:left-[25px] font-medium text-[#141414] text-base md:text-xl tracking-[0] leading-[normal]">
                                     ${user2}: ${formatRating(film.user2Rating)}
                                 </div>
                             </div>
