@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Film Compatibility Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url("https://fonts.googleapis.com/css?family=Inter:900,800,600,500,400,700");
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-[#fbf9f5] min-h-screen font-sans px-4 py-8 md:px-16 md:py-12">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl md:text-6xl lg:text-8xl xl:text-[100px] font-black text-[#141414] mb-4 leading-tight">
+                FILM COMPATIBILITY TEST
+            </h1>
+            <p class="text-lg md:text-2xl lg:text-3xl text-[#141414] font-normal">
+                Compare <a href="https://letterboxd.com/" target="_blank" rel="noopener noreferrer" class="underline hover:no-underline">Letterboxd</a> profiles and discover how aligned your film tastes really are
+            </p>
+        </div>
+
+        <!-- Input Form -->
+        <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 mb-8 lg:mb-12">
+            <!-- Username Inputs -->
+            <div class="flex-1 bg-[#fbf9f5] border-[3px] border-[#141414] rounded-2xl p-6 flex flex-col sm:flex-row">
+                <input type="text" id="username1" placeholder="username #1" 
+                       class="flex-1 bg-transparent text-[#141414] text-xl md:text-3xl lg:text-4xl font-bold text-center placeholder-[#141414] placeholder-opacity-60 outline-none border-none p-2">
+                <div class="hidden sm:block w-[1px] bg-[#141414] mx-4"></div>
+                <input type="text" id="username2" placeholder="username #2" 
+                       class="flex-1 bg-transparent text-[#141414] text-xl md:text-3xl lg:text-4xl font-bold text-center placeholder-[#141414] placeholder-opacity-60 outline-none border-none p-2">
+            </div>
+            
+            <!-- Analyze Button -->
+            <button type="submit" id="compareBtn" 
+                    class="bg-[#141414] hover:bg-gray-800 text-[#fbf9f5] text-xl md:text-3xl lg:text-4xl font-bold px-8 py-6 rounded-2xl border-[3px] border-[#141414] transition-colors min-w-[200px] lg:min-w-[300px]">
+                ANALYZE
+            </button>
+        </div>
+
+        <!-- Results Grid -->
+        <div id="results" class="hidden">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mb-8 lg:mb-12">
+                <!-- Match Rate -->
+                <div class="bg-[#ffe250] border-[3px] border-[#141414] rounded-2xl p-6 lg:p-8 text-center min-h-[250px] lg:min-h-[356px] flex flex-col justify-center">
+                    <div id="compatibilityScore" class="text-6xl md:text-8xl lg:text-[150px] font-extrabold text-[#141414] leading-none mb-2">0%</div>
+                    <div class="text-xl md:text-3xl lg:text-4xl font-bold text-[#141414]">MATCH RATE</div>
+                </div>
+
+                <!-- Films in Common -->
+                <div class="bg-[#50d98a] border-[3px] border-[#141414] rounded-2xl p-6 lg:p-8 text-center min-h-[250px] lg:min-h-[356px] flex flex-col justify-center">
+                    <div id="totalFilms" class="text-6xl md:text-8xl lg:text-[150px] font-extrabold text-[#141414] leading-none mb-2">0</div>
+                    <div class="text-xl md:text-3xl lg:text-4xl font-bold text-[#141414]">FILMS<br>IN COMMON</div>
+                </div>
+
+                <!-- Close Matches -->
+                <div class="bg-[#b788ef] border-[3px] border-[#141414] rounded-2xl p-6 lg:p-8 text-center min-h-[250px] lg:min-h-[356px] flex flex-col justify-center md:col-span-2 lg:col-span-1">
+                    <div id="closeMatchesCount" class="text-6xl md:text-8xl lg:text-[150px] font-extrabold text-[#141414] leading-none mb-2">0</div>
+                    <div class="text-xl md:text-3xl lg:text-4xl font-bold text-[#141414]">CLOSE MATCHES</div>
+                </div>
+            </div>
+
+            <!-- Matches and Mismatches -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+                <!-- Matches Section -->
+                <div class="space-y-4 lg:space-y-6">
+                    <h2 class="text-4xl lg:text-6xl font-black text-[#141414]">MATCHES</h2>
+                    <div id="matchesList" class="space-y-4">
+                        <!-- Matches will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Mismatches Section -->
+                <div class="space-y-4 lg:space-y-6">
+                    <h2 class="text-4xl lg:text-6xl font-black text-[#141414]">MISMATCHES</h2>
+                    <div id="mismatchesList" class="space-y-4">
+                        <!-- Mismatches will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error State -->
+        <div id="error" class="hidden bg-[#ff6e58] border-[3px] border-[#141414] rounded-2xl p-6 text-center">
+            <div class="text-xl lg:text-3xl font-bold text-[#141414]" id="errorMessage"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const compareBtn = document.getElementById('compareBtn');
+            const results = document.getElementById('results');
+            const error = document.getElementById('error');
+
+            // Form submission logic
+            compareBtn.addEventListener('click', async function(e) {
+                e.preventDefault();
+                
+                const username1 = document.getElementById('username1').value.trim();
+                const username2 = document.getElementById('username2').value.trim();
+                
+                if (!username1 || !username2) {
+                    showError('Please enter both usernames');
+                    return;
+                }
+                
+                if (username1 === username2) {
+                    showError('Please enter different usernames');
+                    return;
+                }
+                
+                hideAllMessages();
+                showLoading();
+                
+                try {
+                    const response = await fetch('/compare', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ username1, username2 })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        showResults(data);
+                    } else {
+                        showError(data.error || 'An error occurred');
+                    }
+                } catch (err) {
+                    showError('Failed to connect to server');
+                }
+            });
+            
+            function showLoading() {
+                compareBtn.disabled = true;
+                compareBtn.classList.add('bg-gray-500');
+                compareBtn.classList.remove('bg-[#141414]', 'hover:bg-gray-800');
+                
+                // Animate the ellipsis
+                let dots = 0;
+                const animateEllipsis = () => {
+                    dots = (dots + 1) % 4;
+                    compareBtn.textContent = 'ANALYZING' + '.'.repeat(dots).padEnd(3, ' ');
+                };
+                
+                animateEllipsis();
+                compareBtn.ellipsisInterval = setInterval(animateEllipsis, 500);
+            }
+            
+            function hideLoading() {
+                compareBtn.disabled = false;
+                compareBtn.textContent = 'ANALYZE';
+                compareBtn.classList.remove('bg-gray-500');
+                compareBtn.classList.add('bg-[#141414]', 'hover:bg-gray-800');
+                
+                if (compareBtn.ellipsisInterval) {
+                    clearInterval(compareBtn.ellipsisInterval);
+                    compareBtn.ellipsisInterval = null;
+                }
+            }
+            
+            function showResults(data) {
+                hideLoading();
+                
+                const { compatibility, user1, user2 } = data;
+                
+                // Update stats
+                document.getElementById('compatibilityScore').textContent = `${compatibility.compatibilityScore}%`;
+                document.getElementById('totalFilms').textContent = compatibility.totalSharedFilms;
+                document.getElementById('closeMatchesCount').textContent = compatibility.sharedFilmsCount;
+                
+                // Helper function to format rating as stars
+                function formatRating(rating) {
+                    const fullStars = Math.floor(rating);
+                    const halfStar = rating % 1 >= 0.5;
+                    return '★'.repeat(fullStars) + (halfStar ? '½' : '');
+                }
+                
+                // Display matches
+                const matchesList = document.getElementById('matchesList');
+                if (compatibility.closeMatches && compatibility.closeMatches.length > 0) {
+                    matchesList.innerHTML = compatibility.closeMatches.map((film) => `
+                        <a href="${film.url || '#'}" target="_blank" rel="noopener noreferrer" 
+                           class="block bg-[#51efec] border-[3px] border-[#141414] rounded-2xl p-4 lg:p-6 hover:bg-opacity-80 transition-all">
+                            <h3 class="text-lg lg:text-3xl font-semibold text-[#141414] mb-2">${film.title}</h3>
+                            <div class="text-sm lg:text-xl font-medium text-[#141414]">
+                                ${user1}: ${formatRating(film.user1Rating)}
+                            </div>
+                            <div class="text-sm lg:text-xl font-medium text-[#141414]">
+                                ${user2}: ${formatRating(film.user2Rating)}
+                            </div>
+                        </a>
+                    `).join('');
+                } else {
+                    matchesList.innerHTML = '<div class="text-[#141414] text-lg">No close matches found</div>';
+                }
+                
+                // Display mismatches
+                const mismatchesList = document.getElementById('mismatchesList');
+                if (compatibility.biggestDifferences && compatibility.biggestDifferences.length > 0) {
+                    mismatchesList.innerHTML = compatibility.biggestDifferences.map((film) => `
+                        <a href="${film.url || '#'}" target="_blank" rel="noopener noreferrer" 
+                           class="block bg-[#ff6e58] border-[3px] border-[#141414] rounded-2xl p-4 lg:p-6 hover:bg-opacity-80 transition-all">
+                            <h3 class="text-lg lg:text-3xl font-semibold text-[#141414] mb-2">${film.title}</h3>
+                            <div class="text-sm lg:text-xl font-medium text-[#141414]">
+                                ${user1}: ${formatRating(film.user1Rating)}
+                            </div>
+                            <div class="text-sm lg:text-xl font-medium text-[#141414]">
+                                ${user2}: ${formatRating(film.user2Rating)}
+                            </div>
+                        </a>
+                    `).join('');
+                } else {
+                    mismatchesList.innerHTML = '<div class="text-[#141414] text-lg">No major disagreements</div>';
+                }
+                
+                results.classList.remove('hidden');
+            }
+            
+            function showError(message) {
+                hideLoading();
+                document.getElementById('errorMessage').textContent = message;
+                error.classList.remove('hidden');
+            }
+            
+            function hideAllMessages() {
+                results.classList.add('hidden');
+                error.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

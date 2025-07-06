@@ -46,16 +46,32 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function showLoading() {
         compareBtn.disabled = true;
-        compareBtn.textContent = '🎬 Analyzing...';
         compareBtn.classList.add('bg-gray-500');
         compareBtn.classList.remove('bg-blue-700', 'hover:bg-blue-800');
+        
+        // Animate the ellipsis
+        let dots = 0;
+        const animateEllipsis = () => {
+            dots = (dots + 1) % 4;
+            compareBtn.textContent = '🎬 Analyzing' + '.'.repeat(dots).padEnd(3, ' ');
+        };
+        
+        // Start animation immediately and then every 500ms
+        animateEllipsis();
+        compareBtn.ellipsisInterval = setInterval(animateEllipsis, 500);
     }
     
     function hideLoading() {
         compareBtn.disabled = false;
-        compareBtn.textContent = 'Analyze Compatibility';
+        compareBtn.textContent = 'Analyze';
         compareBtn.classList.remove('bg-gray-500');
         compareBtn.classList.add('bg-blue-700', 'hover:bg-blue-800');
+        
+        // Clear the ellipsis animation
+        if (compareBtn.ellipsisInterval) {
+            clearInterval(compareBtn.ellipsisInterval);
+            compareBtn.ellipsisInterval = null;
+        }
     }
     
     function showResults(data) {

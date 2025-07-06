@@ -253,14 +253,14 @@ function calculateCompatibility(user1Films, user2Films) {
       totalRatingUnits += rating1 + rating2;
       totalDiscrepancyUnits += difference;
       
-      // Include films with rating difference ≤ 0.5 stars for compatibility calculation
-      if (difference <= 0.5) {
+      // Include films with exact same rating (difference = 0) for matches
+      if (difference === 0) {
         closeMatches.push(filmData);
         totalRatingDifference += difference;
       }
       
-      // Also collect films with bigger differences (>= 1.5 stars) for the differences section
-      if (difference >= 1.5) {
+      // Also collect films with big differences (>= 2 stars) for the mismatches section
+      if (difference >= 2) {
         biggestDifferences.push(filmData);
       }
     }

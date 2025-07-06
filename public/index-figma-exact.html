@@ -42,8 +42,8 @@
         }
     </script>
 </head>
-<body class="bg-[#fbf9f5] min-h-screen flex justify-center">
-    <div class="flex flex-col items-center gap-[26px] px-[66px] pt-[24px] pb-[86px] relative bg-[#fbf9f5] scale-[0.6]" style="transform-origin: center top;">
+<body class="bg-[#fbf9f5] min-h-screen">
+    <div class="flex flex-col items-start gap-[26px] pl-[66px] pr-[66px] pt-[24px] pb-[86px] relative bg-[#fbf9f5] scale-[0.8] origin-top mx-auto" style="width: 125%;">
         <!-- Header Section -->
         <div class="flex flex-col items-center relative self-stretch w-full">
             <div class="relative self-stretch mt-[-1.00px] font-black text-[#141414] text-[100px] tracking-[0] leading-[normal] text-center">
@@ -84,7 +84,7 @@
                 <div class="flex items-center gap-9 relative justify-center w-full mb-[30px]">
                     <!-- Match Rate Card -->
                     <div class="relative w-[429px] h-[356px]">
-                        <div class="w-[425px] h-[356px] bg-[#ffe250] relative rounded-2xl border-[3px] border-solid border-[#141414] flex flex-col items-center justify-center">
+                        <div class="w-[425px] h-[356px] bg-[#ffe250] relative rounded-2xl border-[3px] border-solid border-[#141414] flex flex-col items-center justify-start pt-12">
                             <div id="compatibilityScore" class="font-extrabold text-[#141414] text-[150px] tracking-[0] leading-[normal] mb-[-10px]">
                                 0%
                             </div>
@@ -96,7 +96,7 @@
 
                     <!-- Films in Common Card -->
                     <div class="relative w-[428px] h-[356px]">
-                        <div class="relative w-[424px] h-[356px] bg-[#50d98a] rounded-2xl border-[3px] border-solid border-[#141414] flex flex-col items-center justify-center">
+                        <div class="relative w-[424px] h-[356px] bg-[#50d98a] rounded-2xl border-[3px] border-solid border-[#141414] flex flex-col items-center justify-start pt-12">
                             <div id="totalFilms" class="font-extrabold text-[#141414] text-[150px] tracking-[0] leading-[normal] mb-[-20px]">
                                 0
                             </div>
@@ -108,12 +108,12 @@
 
                     <!-- Close Matches Card -->
                     <div class="relative w-[429px] h-[356px]">
-                        <div class="relative w-[425px] h-[356px] bg-[#b788ef] rounded-2xl border-[3px] border-solid border-[#141414] flex flex-col items-center justify-center">
+                        <div class="relative w-[425px] h-[356px] bg-[#b788ef] rounded-2xl border-[3px] border-solid border-[#141414] flex flex-col items-center justify-start pt-12">
                             <div id="closeMatchesCount" class="font-extrabold text-[#141414] text-[150px] tracking-[0] leading-[normal] mb-[-20px]">
                                 0
                             </div>
                             <div class="font-bold text-[#141414] text-[40px] text-center tracking-[0] leading-[normal]">
-                                EXACT<br />MATCHES
+                                CLOSE<br />MATCHES
                             </div>
                         </div>
                     </div>
@@ -124,7 +124,7 @@
                     <div class="flex items-start gap-[30px] relative justify-center w-full max-w-[1352px] mx-auto">
                         <div class="flex-1 max-w-[660px]">
                             <div class="font-black text-[#141414] text-6xl tracking-[0] leading-[normal] mb-5">
-                                EXACT MATCHES
+                                MATCHES
                             </div>
                             <div id="matchesList" class="space-y-4">
                                 <!-- Matches will be populated here -->
@@ -252,9 +252,9 @@
                 document.getElementById('totalFilms').textContent = compatibility.totalSharedFilms;
                 document.getElementById('closeMatchesCount').textContent = compatibility.sharedFilmsCount;
                 
-                // Update exact matches label with proper singular/plural
+                // Update close matches label with proper singular/plural
                 const closeMatchesLabel = document.querySelector('#closeMatchesCount').parentElement.querySelector('div:last-child');
-                closeMatchesLabel.innerHTML = compatibility.sharedFilmsCount === 1 ? 'EXACT<br />MATCH' : 'EXACT<br />MATCHES';
+                closeMatchesLabel.innerHTML = compatibility.sharedFilmsCount === 1 ? 'CLOSE<br />MATCH' : 'CLOSE<br />MATCHES';
                 
                 // Helper function to format rating as stars
                 function formatRating(rating) {
@@ -282,7 +282,7 @@
                         </a>
                     `).join('');
                 } else {
-                    matchesList.innerHTML = '<div class="text-[#141414] text-xl">No exact matches found</div>';
+                    matchesList.innerHTML = '<div class="text-[#141414] text-xl">No close matches found</div>';
                 }
                 
                 // Display mismatches using exact Figma card styling
@@ -304,7 +304,7 @@
                         </a>
                     `).join('');
                 } else {
-                    mismatchesList.innerHTML = '<div class="text-[#141414] text-xl">No major disagreements (2+ star difference)</div>';
+                    mismatchesList.innerHTML = '<div class="text-[#141414] text-xl">No major disagreements</div>';
                 }
                 
                 results.classList.remove('hidden');
