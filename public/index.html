@@ -113,7 +113,7 @@
                                 0
                             </div>
                             <div class="font-bold text-[#141414] text-[40px] text-center tracking-[0] leading-[normal]">
-                                EXACT<br />MATCHES
+                                MATCHES
                             </div>
                         </div>
                     </div>
@@ -124,7 +124,7 @@
                     <div class="flex items-start gap-[30px] relative justify-center w-full max-w-[1352px] mx-auto">
                         <div class="flex-1 max-w-[660px]">
                             <div class="font-black text-[#141414] text-6xl tracking-[0] leading-[normal] mb-5">
-                                EXACT MATCHES
+                                MATCHES
                             </div>
                             <div id="matchesList" class="space-y-4">
                                 <!-- Matches will be populated here -->
@@ -252,9 +252,9 @@
                 document.getElementById('totalFilms').textContent = compatibility.totalSharedFilms;
                 document.getElementById('closeMatchesCount').textContent = compatibility.sharedFilmsCount;
                 
-                // Update exact matches label with proper singular/plural
+                // Update matches label with proper singular/plural
                 const closeMatchesLabel = document.querySelector('#closeMatchesCount').parentElement.querySelector('div:last-child');
-                closeMatchesLabel.innerHTML = compatibility.sharedFilmsCount === 1 ? 'EXACT<br />MATCH' : 'EXACT<br />MATCHES';
+                closeMatchesLabel.innerHTML = compatibility.sharedFilmsCount === 1 ? 'MATCH' : 'MATCHES';
                 
                 // Helper function to format rating as stars
                 function formatRating(rating) {
@@ -282,7 +282,7 @@
                         </a>
                     `).join('');
                 } else {
-                    matchesList.innerHTML = '<div class="text-[#141414] text-xl">No exact matches found</div>';
+                    matchesList.innerHTML = '<div class="text-[#141414] text-xl">No matches found</div>';
                 }
                 
                 // Display mismatches using exact Figma card styling
