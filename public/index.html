@@ -221,7 +221,9 @@
                 let dots = 0;
                 const animateEllipsis = () => {
                     dots = (dots + 1) % 4;
-                    buttonText.textContent = 'ANALYZING' + '.'.repeat(dots).padEnd(3, ' ');
+                    // Use fixed-width space to prevent shifting
+                    const dotsText = '.'.repeat(dots).padEnd(3, '\u00A0'); // non-breaking space
+                    buttonText.textContent = 'ANALYZING' + dotsText;
                 };
                 
                 animateEllipsis();
