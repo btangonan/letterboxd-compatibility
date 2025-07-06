@@ -1,4 +1,4 @@
-app = "matchboxd"
+app = "matchboxd-app"
 primary_region = "dfw"
 
 [build]
