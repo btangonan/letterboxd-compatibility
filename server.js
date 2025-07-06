@@ -282,13 +282,14 @@ function calculateCompatibility(user1Films, user2Films) {
     }
     baseScore = Math.max(0, baseScore);
     
-    // Bonuses and penalties
-    const exactMatchBonus = exactMatchPercentage * 20; // Up to +20 points for 100% exact matches
-    const noMismatchBonus = mismatchPercentage === 0 ? 10 : 0; // +10 points for zero major disagreements
+    // Bonuses and penalties - enhanced for better rewards
+    const exactMatchBonus = exactMatchPercentage * 30; // Up to +30 points for 100% exact matches (was 20)
+    const noMismatchBonus = mismatchPercentage === 0 ? 15 : 0; // +15 points for zero major disagreements (was 10)
+    const highAgreementBonus = exactMatchPercentage >= 0.25 && mismatchPercentage === 0 ? 8 : 0; // Extra +8 for 25%+ exact matches with no disagreements
     const mismatchPenalty = mismatchPercentage * 15; // Up to -15 points for high mismatch rate
     
     // Final score with bonuses/penalties
-    compatibilityScore = Math.round(baseScore + exactMatchBonus + noMismatchBonus - mismatchPenalty);
+    compatibilityScore = Math.round(baseScore + exactMatchBonus + noMismatchBonus + highAgreementBonus - mismatchPenalty);
     compatibilityScore = Math.max(0, Math.min(100, compatibilityScore)); // Clamp between 0-100
   }
   
@@ -298,8 +299,9 @@ function calculateCompatibility(user1Films, user2Films) {
     const exactMatchPercentage = closeMatches.length / allSharedFilms.length;
     const mismatchPercentage = biggestDifferences.length / allSharedFilms.length;
     const baseScore = averageDiscrepancy <= 2.25 ? 100 - (averageDiscrepancy / 2.25) * 64 : 36 - ((averageDiscrepancy - 2.25) / 1.25) * 36;
-    const exactMatchBonus = exactMatchPercentage * 20;
-    const noMismatchBonus = mismatchPercentage === 0 ? 10 : 0;
+    const exactMatchBonus = exactMatchPercentage * 30;
+    const noMismatchBonus = mismatchPercentage === 0 ? 15 : 0;
+    const highAgreementBonus = exactMatchPercentage >= 0.25 && mismatchPercentage === 0 ? 8 : 0;
     const mismatchPenalty = mismatchPercentage * 15;
     
     console.log(`🧮 Compatibility Calculation Debug:`);
@@ -310,6 +312,7 @@ function calculateCompatibility(user1Films, user2Films) {
     console.log(`   Base score: ${baseScore.toFixed(1)}`);
     console.log(`   Exact match bonus: +${exactMatchBonus.toFixed(1)}`);
     console.log(`   No mismatch bonus: +${noMismatchBonus}`);
+    console.log(`   High agreement bonus: +${highAgreementBonus}`);
     console.log(`   Mismatch penalty: -${mismatchPenalty.toFixed(1)}`);
     console.log(`   Final score: ${compatibilityScore}%`);
   }
