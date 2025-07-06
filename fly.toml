@@ -1,4 +1,4 @@
-app = "letterbuddy"
+app = "matchboxd"
 primary_region = "dfw"
 
 [build]
