@@ -282,10 +282,10 @@ function calculateCompatibility(user1Films, user2Films) {
     }
     baseScore = Math.max(0, baseScore);
     
-    // Bonuses and penalties - enhanced for better rewards
-    const exactMatchBonus = exactMatchPercentage * 30; // Up to +30 points for 100% exact matches (was 20)
-    const noMismatchBonus = mismatchPercentage === 0 ? 15 : 0; // +15 points for zero major disagreements (was 10)
-    const highAgreementBonus = exactMatchPercentage >= 0.25 && mismatchPercentage === 0 ? 8 : 0; // Extra +8 for 25%+ exact matches with no disagreements
+    // Bonuses and penalties - balanced for realistic scoring
+    const exactMatchBonus = exactMatchPercentage * 15; // Up to +15 points for 100% exact matches 
+    const noMismatchBonus = mismatchPercentage === 0 ? 8 : 0; // +8 points for zero major disagreements
+    const highAgreementBonus = exactMatchPercentage >= 0.25 && mismatchPercentage === 0 ? 4 : 0; // Extra +4 for 25%+ exact matches with no disagreements
     const mismatchPenalty = mismatchPercentage * 15; // Up to -15 points for high mismatch rate
     
     // Final score with bonuses/penalties
@@ -299,9 +299,9 @@ function calculateCompatibility(user1Films, user2Films) {
     const exactMatchPercentage = closeMatches.length / allSharedFilms.length;
     const mismatchPercentage = biggestDifferences.length / allSharedFilms.length;
     const baseScore = averageDiscrepancy <= 2.25 ? 100 - (averageDiscrepancy / 2.25) * 64 : 36 - ((averageDiscrepancy - 2.25) / 1.25) * 36;
-    const exactMatchBonus = exactMatchPercentage * 30;
-    const noMismatchBonus = mismatchPercentage === 0 ? 15 : 0;
-    const highAgreementBonus = exactMatchPercentage >= 0.25 && mismatchPercentage === 0 ? 8 : 0;
+    const exactMatchBonus = exactMatchPercentage * 15;
+    const noMismatchBonus = mismatchPercentage === 0 ? 8 : 0;
+    const highAgreementBonus = exactMatchPercentage >= 0.25 && mismatchPercentage === 0 ? 4 : 0;
     const mismatchPenalty = mismatchPercentage * 15;
     
     console.log(`🧮 Compatibility Calculation Debug:`);
