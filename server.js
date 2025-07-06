@@ -266,28 +266,53 @@ function calculateCompatibility(user1Films, user2Films) {
     }
   }
   
-  // Calculate compatibility score using linear scale from 36% (2.25 stars) to 100% (perfect)
+  // Calculate compatibility score with weighted algorithm that rewards exact matches and penalizes mismatches
   let compatibilityScore = 0;
   if (allSharedFilms.length > 0) {
     const averageDiscrepancy = totalDiscrepancyUnits / allSharedFilms.length;
-    // Linear scale: 100% at 0 stars, 36% at 2.25 stars
-    // Formula: 100 - (avg_discrepancy / 2.25) * 64
+    const exactMatchPercentage = closeMatches.length / allSharedFilms.length;
+    const mismatchPercentage = biggestDifferences.length / allSharedFilms.length;
+    
+    // Base score from average discrepancy (traditional method)
+    let baseScore = 0;
     if (averageDiscrepancy <= 2.25) {
-      compatibilityScore = Math.round(100 - (averageDiscrepancy / 2.25) * 64);
+      baseScore = 100 - (averageDiscrepancy / 2.25) * 64;
     } else {
-      // Beyond 2.25 stars, continue linear decline to 0% at 3.5 stars
-      compatibilityScore = Math.round(36 - ((averageDiscrepancy - 2.25) / 1.25) * 36);
+      baseScore = 36 - ((averageDiscrepancy - 2.25) / 1.25) * 36;
     }
-    compatibilityScore = Math.max(0, compatibilityScore); // Ensure it doesn't go below 0
+    baseScore = Math.max(0, baseScore);
+    
+    // Bonuses and penalties
+    const exactMatchBonus = exactMatchPercentage * 20; // Up to +20 points for 100% exact matches
+    const noMismatchBonus = mismatchPercentage === 0 ? 10 : 0; // +10 points for zero major disagreements
+    const mismatchPenalty = mismatchPercentage * 15; // Up to -15 points for high mismatch rate
+    
+    // Final score with bonuses/penalties
+    compatibilityScore = Math.round(baseScore + exactMatchBonus + noMismatchBonus - mismatchPenalty);
+    compatibilityScore = Math.max(0, Math.min(100, compatibilityScore)); // Clamp between 0-100
   }
   
   // Debug logging
-  console.log(`🧮 Compatibility Calculation Debug:`);
-  console.log(`   Total shared films: ${allSharedFilms.length}`);
-  console.log(`   Total discrepancy units: ${totalDiscrepancyUnits}`);
-  console.log(`   Avg discrepancy per film: ${(totalDiscrepancyUnits / allSharedFilms.length).toFixed(2)}`);
-  console.log(`   Compatibility score: ${compatibilityScore}%`);
-  console.log(`   Formula: 100 - (${(totalDiscrepancyUnits / allSharedFilms.length).toFixed(2)} / 2.25) * 64`);
+  if (allSharedFilms.length > 0) {
+    const averageDiscrepancy = totalDiscrepancyUnits / allSharedFilms.length;
+    const exactMatchPercentage = closeMatches.length / allSharedFilms.length;
+    const mismatchPercentage = biggestDifferences.length / allSharedFilms.length;
+    const baseScore = averageDiscrepancy <= 2.25 ? 100 - (averageDiscrepancy / 2.25) * 64 : 36 - ((averageDiscrepancy - 2.25) / 1.25) * 36;
+    const exactMatchBonus = exactMatchPercentage * 20;
+    const noMismatchBonus = mismatchPercentage === 0 ? 10 : 0;
+    const mismatchPenalty = mismatchPercentage * 15;
+    
+    console.log(`🧮 Compatibility Calculation Debug:`);
+    console.log(`   Total shared films: ${allSharedFilms.length}`);
+    console.log(`   Exact matches: ${closeMatches.length} (${(exactMatchPercentage * 100).toFixed(1)}%)`);
+    console.log(`   Major mismatches: ${biggestDifferences.length} (${(mismatchPercentage * 100).toFixed(1)}%)`);
+    console.log(`   Avg discrepancy: ${averageDiscrepancy.toFixed(2)} stars`);
+    console.log(`   Base score: ${baseScore.toFixed(1)}`);
+    console.log(`   Exact match bonus: +${exactMatchBonus.toFixed(1)}`);
+    console.log(`   No mismatch bonus: +${noMismatchBonus}`);
+    console.log(`   Mismatch penalty: -${mismatchPenalty.toFixed(1)}`);
+    console.log(`   Final score: ${compatibilityScore}%`);
+  }
   
   // Calculate average rating difference for display purposes
   const averageRatingDifference = allSharedFilms.length > 0 ? 
